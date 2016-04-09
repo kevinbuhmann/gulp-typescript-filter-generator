@@ -1,21 +1,22 @@
-var typescriptFilterGenerator = require('../typescript-filter-generator/index.js');
-var through = require('through2');
-var gulpUtil = require('gulp-util');
+'use strict'
 
-var PLUGIN_NAME = 'gulp-typescript-filter-generator';
+let typescriptFilterGenerator = require('../typescript-filter-generator/index.js');
+let through = require('through2');
+let gulpUtil = require('gulp-util');
+
+let PLUGIN_NAME = 'gulp-typescript-filter-generator';
 
 module.exports = function(options) {
-    var stream = through.obj(function(file, enc, callback) {
+    let stream = through.obj(function(file, enc, callback) {
         if (file.isStream()) {
             this.emit('error', new gulpUtil.gulpUtil(PLUGIN_NAME, 'Streams not supported yet!'));
             return callback();
-
         }
 		
         if (file.isBuffer()) {
             if (file.contents) {
-                var input = file.contents.toString();
-                var result = typescriptFilterGenerator(input, options);
+                let input = file.contents.toString();
+                let result = typescriptFilterGenerator(input, options);
 
                 file.contents = new Buffer(result);
 
