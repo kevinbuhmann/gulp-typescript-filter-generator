@@ -1,6 +1,6 @@
 'use strict'
 
-let typescriptFilterGenerator = require('../typescript-filter-generator/index.js');
+let typescriptFilterGenerator = require('typescript-filter-generator');
 let through = require('through2');
 let gulpUtil = require('gulp-util');
 
