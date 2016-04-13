@@ -19,20 +19,23 @@ module.exports = function(options) {
                 let input = file.contents.toString();
                 let result = typescriptFilterGenerator(input, options);
 
-                file.contents = new Buffer(result);
+                if (result) {
+                    file.contents = new Buffer(result);
 
-                let folderMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)`));
-                let folder = pluralize(folderMatch[1]);
+                    let folderMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)`));
+                    let folder = pluralize(folderMatch[1]);
 
-                let filenameMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)\.cs`));
-                let filename = filenameMatch[1][1].endsWith('Filter') ?
-                filenameMatch[1] : `${filenameMatch[1]}Filter`;
+                    let filenameMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)\.cs`));
+                    let filename = filenameMatch[1][1].endsWith('Filter') ?
+                    filenameMatch[1] : `${filenameMatch[1]}Filter`;
 
-                file.path = `${file.base}${folder}${filename}.ts`;
+                    file.path = `${file.base}${folder}${filename}.ts`;
+
+          					this.push(file);
+                }
             }
         }
 
-        this.push(file);
         callback();
     });
 
