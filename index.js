@@ -1,6 +1,7 @@
 'use strict'
 
 let typescriptFilterGenerator = require('typescript-filter-generator');
+let pluralize = require('pluralize');
 let through = require('through2');
 let gulpUtil = require('gulp-util');
 
@@ -12,7 +13,7 @@ module.exports = function(options) {
             this.emit('error', new gulpUtil.gulpUtil(PLUGIN_NAME, 'Streams not supported yet!'));
             return callback();
         }
-		
+
         if (file.isBuffer()) {
             if (file.contents) {
                 let input = file.contents.toString();
@@ -20,13 +21,19 @@ module.exports = function(options) {
 
                 file.contents = new Buffer(result);
 
-                file.path = file.path.substring(0, file.path.length - 2) + 'ts';
-                file.path = file.path.replace(/\\(?![\s\S]*\\)/, '');
-    		}
-		}
+                let folderMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)`));
+                let folder = pluralize(folderMatch[1]);
 
-    	this.push(file);
-		callback();
+                let filenameMatch = file.relative.match(new RegExp(`([A-Za-z0-9]+)\.cs`));
+                let filename = filenameMatch[1][1].endsWith('Filter') ?
+                filenameMatch[1] : `${filenameMatch[1]}Filter`;
+
+                file.path = `${file.base}${folder}${filename}.ts`;
+            }
+        }
+
+        this.push(file);
+        callback();
     });
 
     return stream;
